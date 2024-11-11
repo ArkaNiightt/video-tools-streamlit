@@ -17,7 +17,7 @@ Com esta ferramenta, é possível baixar vídeos de diferentes plataformas. Voc�
 1. **Clone o repositório para sua máquina local**:
 
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/ArkaNiightt/video-tools-streamlit.git
    ```
 
 2. **Instale as dependências necessárias** (Streamlit, pytube, youtube-transcript-api, etc.):
