@@ -51,9 +51,14 @@ def main():
                 os.remove(file_title)
 
             return file_bytes
-        except Exception as e:
-            st.error(f"Erro ao baixar o arquivo: {e}")
-            return None
+        except yt_dlp.utils.DownloadError as e:
+            # Verificando se o erro corresponde ao vídeo não disponível
+            if "Video unavailable" in str(e):
+                print(
+                    f"Erro ao baixar o arquivo: {str(e)}. O vídeo não está disponível."
+                )
+            else:
+                print(f"Erro ao baixar o arquivo: {str(e)}")
 
     # Título do aplicativo
     st.title("Download de Vídeos (MP3/MP4)")
