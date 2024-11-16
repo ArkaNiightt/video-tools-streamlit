@@ -1,64 +1,73 @@
 import streamlit as st
 import yt_dlp
 import os
+import re
 
 
 def main():
-    # Função para baixar áudio do YouTube
-    def download_youtube_video(youtube_url, format_type, quality=None):
+    # Função para baixar vídeo ou áudio do YouTube
+    def download_youtube_video(youtube_url, format_type, quality=None, cookies_path='cookies.txt'):
+        # Pasta para salvar os arquivos baixados
+        download_folder = "downloads"
+        if not os.path.exists(download_folder):
+            os.makedirs(download_folder)
+
+        # Definindo as opções do yt_dlp dependendo do formato solicitado
         if format_type == "mp3":
             ydl_opts = {
-                "format": "bestaudio/best",
+                "format": "bestaudio/best",  # Melhor qualidade de áudio disponível
                 "postprocessors": [
                     {
                         "key": "FFmpegExtractAudio",
                         "preferredcodec": "mp3",
-                        "preferredquality": "192",
+                        "preferredquality": "192",  # Qualidade do áudio
                     }
                 ],
-                "outtmpl": "%(title)s.%(ext)s",
+                "outtmpl": os.path.join(download_folder, "%(title)s.%(ext)s"),  # Modelo do nome do arquivo de saída
+                "cookiefile": cookies_path  # Arquivo de cookies para autenticação
             }
         elif format_type == "mp4":
             if quality:
                 ydl_opts = {
-                    "format": f"bestvideo[height<={quality}]+bestaudio/best",
-                    "outtmpl": "%(title)s.%(ext)s",
+                    "format": f"bestvideo[height<={quality}]+bestaudio/best",  # Melhor vídeo disponível até a qualidade especificada, com melhor áudio
+                    "outtmpl": os.path.join(download_folder, "%(title)s.%(ext)s"),
+                    "cookiefile": cookies_path
                 }
             else:
                 ydl_opts = {
-                    "format": "bestvideo+bestaudio",
-                    "outtmpl": "%(title)s.%(ext)s",
+                    "format": "bestvideo+bestaudio",  # Melhor qualidade de vídeo e áudio disponível
+                    "outtmpl": os.path.join(download_folder, "%(title)s.%(ext)s"),
+                    "cookiefile": cookies_path
                 }
         else:
             st.error("Formato inválido")
             return None
 
         try:
+            # Usando yt_dlp para baixar o vídeo/áudio
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(youtube_url, download=True)
+                # Determinar o nome do arquivo resultante
+                title = info_dict.get('title', 'video').replace('/', '_')
+                title = re.sub(r'[^\w\-_\. ]', '_', title)  # Ajustar o título para um padrão seguro
+
                 if format_type == "mp3":
-                    file_title = (
-                        ydl.prepare_filename(info_dict).rsplit(".", 1)[0] + ".mp3"
-                    )
+                    file_title = os.path.join(download_folder, f"{title}.mp3")
                 else:
-                    file_title = ydl.prepare_filename(info_dict)
+                    file_title = os.path.join(download_folder, f"{title}.mp4")
 
                 # Abrir o arquivo gerado e carregar no buffer
                 with open(file_title, "rb") as f:
                     file_bytes = f.read()
 
-                # Excluir o arquivo temporário após o uso
-                os.remove(file_title)
-
-            return file_bytes
+            return file_bytes, file_title
         except yt_dlp.utils.DownloadError as e:
             # Verificando se o erro corresponde ao vídeo não disponível
             if "Video unavailable" in str(e):
-                print(
-                    f"Erro ao baixar o arquivo: {str(e)}. O vídeo não está disponível."
-                )
+                st.error(f"Erro ao baixar o arquivo: {str(e)}. O vídeo não está disponível.")
             else:
-                print(f"Erro ao baixar o arquivo: {str(e)}")
+                st.error(f"Erro ao baixar o arquivo: {str(e)}")
+        return None, None
 
     # Título do aplicativo
     st.title("Download de Vídeos (MP3/MP4)")
@@ -79,26 +88,28 @@ def main():
     # Botão para iniciar o download
     if st.button("Baixar"):
         if youtube_url:
-            with st.status("Baixando dados...", expanded=True) as status:
-                file_bytes = download_youtube_video(youtube_url, format_type, quality)
+            # Exibindo um spinner enquanto o download está em progresso
+            with st.spinner("Baixando dados..."):
+                file_bytes, file_title = download_youtube_video(youtube_url, format_type, quality)
                 if file_bytes:
+                    # Definindo o nome e o tipo do arquivo para download
+                    file_name = os.path.basename(file_title)
                     if format_type == "mp3":
-                        file_name = f"{youtube_url}_audio.mp3"
                         mime_type = "audio/mpeg"
                     else:
-                        file_name = f"{youtube_url}_video.mp4"
                         mime_type = "video/mp4"
 
-                    # Tornar o arquivo disponível para download
+                    # Botão para o usuário baixar o arquivo
                     st.download_button(
                         label="Clique aqui para baixar",
                         data=file_bytes,
                         file_name=file_name,
                         mime=mime_type,
                     )
-                    status.update(
-                        label="Download concluído!", state="complete", expanded=False
-                    )
                     st.success("Download concluído!")
         else:
             st.warning("Por favor, insira uma URL válida.")
+
+
+if __name__ == "__main__":
+    main()

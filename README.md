@@ -1,16 +1,20 @@
 # Ferramentas de Vídeo - Streamlit App
 
-Este é um aplicativo em Python desenvolvido com Streamlit que oferece duas ferramentas principais para vídeos: transcrição de vídeos do YouTube e download de vídeos. O aplicativo possui uma interface amigável com uma barra lateral para facilitar a navegação entre as funcionalidades.
+Este é um aplicativo em Python desenvolvido com Streamlit que oferece ferramentas essenciais para lidar com vídeos: transcrição de vídeos do YouTube, download de vídeos, e download em massa de vídeos em diferentes formatos (MP3/MP4). Com uma interface intuitiva e uma barra lateral para navegação fácil, ele torna o processamento de vídeos mais acessível e rápido.
 
-## 🎯 Funcionalidades
+## 🌟 Funcionalidades Principais
 
-### 📝 Transcrição de Vídeo do YouTube
+### 📜 Transcrição de Vídeos do YouTube
 
-Esta ferramenta permite transcrever vídeos do YouTube de forma rápida e fácil. Basta inserir o link do vídeo, e a transcrição será gerada diretamente no aplicativo. Ideal para capturar o conteúdo de palestras, entrevistas e outros vídeos educativos.
+Com esta ferramenta, você pode transcrever qualquer vídeo do YouTube de maneira rápida e prática. Basta inserir o link do vídeo, e o aplicativo gera a transcrição automaticamente. Ótimo para capturar o conteúdo de palestras, entrevistas e outros vídeos educativos.
 
 ### 📥 Download de Vídeos
 
-Com esta ferramenta, é possível baixar vídeos de diferentes plataformas. Você pode inserir o link do vídeo desejado e realizar o download de forma prática, facilitando o acesso offline ao conteúdo.
+Esta ferramenta permite o download de vídeos de diversas plataformas. Você só precisa inserir o link, e o vídeo é baixado diretamente, facilitando o acesso ao conteúdo offline.
+
+### 🚀 Download em Massa de Vídeos (MP3/MP4)
+
+Esta ferramenta permite que você baixe múltiplos vídeos de uma só vez, em formatos de vídeo (MP4) ou áudio (MP3). Basta inserir uma lista de URLs e selecionar o formato desejado, facilitando o download em grande escala. É ideal para baixar conteúdos para uso offline em diferentes qualidades e formatos.
 
 ## 🚀 Como Usar
 
@@ -20,7 +24,7 @@ Com esta ferramenta, é possível baixar vídeos de diferentes plataformas. Voc�
    git clone https://github.com/ArkaNiightt/video-tools-streamlit.git
    ```
 
-2. **Instale as dependências necessárias** (Streamlit, pytube, youtube-transcript-api, etc.):
+2. **Instale as dependências necessárias** (Streamlit, pytube, youtube-transcript-api, yt-dlp, etc.):
 
    ```bash
    pip install -r requirements.txt
@@ -32,40 +36,40 @@ Com esta ferramenta, é possível baixar vídeos de diferentes plataformas. Voc�
    streamlit run main.py
    ```
 
-4. **Navegue até a barra lateral e selecione a ferramenta que deseja usar**:
+4. **Navegue pela barra lateral e selecione a ferramenta desejada**:
+   - **Transcrição de Vídeos do YouTube**: Insira a URL do vídeo do YouTube para obter a transcrição.
+   - **Download de Vídeos**: Insira a URL do vídeo para baixá-lo.
+   - **Download em Massa de Vídeos**: Insira múltiplas URLs para baixar vídeos em formato MP3 ou MP4.
 
-   - **Transcrição de Vídeo YouTube**: insira a URL do vídeo do YouTube para gerar a transcrição.
-   - **Download de Vídeos**: insira a URL do vídeo para baixá-lo.
-
-## 🛠️ Requisitos
+## 🚒 Requisitos
 
 - Python 3.7 ou superior
 - Streamlit
 - pytube
 - youtube-transcript-api
+- yt-dlp
 
 ## 📂 Estrutura do Código
 
-- **transcricao\_video\_youtube()**: Função responsável por realizar a transcrição dos vídeos do YouTube.
-- **download\_video()**: Função que permite o download dos vídeos.
-- **main()**: Função principal que configura o layout e a navegação entre as ferramentas.
+- **transcricao\_video\_youtube()**: Função para realizar a transcrição dos vídeos do YouTube.
+- **download\_video()**: Função para realizar o download dos vídeos, agora incluindo suporte a diferentes formatos e qualidades.
+- **main()**: Função principal que configura o layout e gerencia a navegação entre as ferramentas.
+- **download\_em\_massa()**: Função que permite o download de múltiplas URLs de vídeos de uma só vez.
 
-## 📈 Melhorias Futuras
+## 📊 Melhorias Futuras
 
-- Adicionar suporte para transcrição em diferentes idiomas.
-- Melhorar a interface com mais estilos e elementos gráficos para uma experiência mais atraente.
-- Implementar autenticação para limitar o uso das ferramentas, garantindo segurança e controle de acesso.
-- Adicionar suporte para download de apenas áudio dos vídeos.
-- Integrar com APIs de tradução para oferecer transcrições em outros idiomas.
+- Suporte para transcrição em diferentes idiomas.
+- Melhorias na interface para torná-la mais atrativa, com mais estilos e elementos gráficos.
+- Implementar autenticação para garantir segurança e controle de acesso.
+- Suporte aprimorado para download de áudio apenas, com diferentes bitrates.
+- Integração com APIs de tradução para oferecer transcrições em outros idiomas.
+- Opção de organizar os downloads por pasta ou título do vídeo.
 
 ## 🤝 Contribuição
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request. Queremos tornar este projeto cada vez mais útil e acessível.
+Contribuições são sempre bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request. Queremos tornar este projeto cada vez mais útil e acessível.
 
 ## 📜 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
----
-
-Desenvolvido com ❤️ e Streamlit para facilitar o acesso e o uso de conteúdo em vídeo.

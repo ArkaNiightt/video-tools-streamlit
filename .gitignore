@@ -1,1 +1,8 @@
 .venv
+cookies.*
+downloads
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+ferramenta_baixar_video/__pycache__
