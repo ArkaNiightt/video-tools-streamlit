@@ -33,7 +33,7 @@ Esta ferramenta permite que você baixe múltiplos vídeos de uma só vez, em fo
 3. **Execute o aplicativo Streamlit**:
 
    ```bash
-   streamlit run main.py
+   streamlit run app.py
    ```
 
 4. **Navegue pela barra lateral e selecione a ferramenta desejada**:
