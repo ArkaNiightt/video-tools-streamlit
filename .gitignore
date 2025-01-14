@@ -7,4 +7,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 ferramenta_baixar_video/__pycache__
+youtube_search_tool
+youtube_search.py
 
