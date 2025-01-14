@@ -2,13 +2,14 @@ import streamlit as st
 import yt_dlp
 import os
 import re
+from pathlib import Path
 
 
 def main():
     # Função para baixar vídeo ou áudio do YouTube
-    def download_youtube_video(youtube_url, format_type, quality=None, cookies_path='cookies.txt'):
+    def download_youtube_video(youtube_url, format_type, quality=None):
         # Pasta para salvar os arquivos baixados
-        download_folder = "downloads"
+        download_folder = Path("downloads")
         if not os.path.exists(download_folder):
             os.makedirs(download_folder)
 
@@ -23,22 +24,18 @@ def main():
                         "preferredquality": "192",  # Qualidade do áudio
                     }
                 ],
-                "outtmpl": os.path.join(download_folder, "%(title)s.%(ext)s"),  # Modelo do nome do arquivo de saída
-                "cookiefile": cookies_path  # Arquivo de cookies para autenticação
+                "outtmpl": str(download_folder / "%(title)s.%(ext)s"),  # Modelo do nome do arquivo de saída
+                "restrictfilenames": True,  # Sanitize filenames to prevent errors
             }
         elif format_type == "mp4":
-            if quality:
                 ydl_opts = {
                     "format": f"bestvideo[height<={quality}]+bestaudio/best",  # Melhor vídeo disponível até a qualidade especificada, com melhor áudio
-                    "outtmpl": os.path.join(download_folder, "%(title)s.%(ext)s"),
-                    "cookiefile": cookies_path
+                    "merge_output_format": "mp4",
+                    "outtmpl": str(download_folder / "%(title)s.%(ext)s"),
+                    "restrictfilenames": True,  # Sanitize filenames to prevent errors
                 }
-            else:
-                ydl_opts = {
-                    "format": "bestvideo+bestaudio",  # Melhor qualidade de vídeo e áudio disponível
-                    "outtmpl": os.path.join(download_folder, "%(title)s.%(ext)s"),
-                    "cookiefile": cookies_path
-                }
+                
+                
         else:
             st.error("Formato inválido")
             return None
@@ -50,17 +47,19 @@ def main():
                 # Determinar o nome do arquivo resultante
                 title = info_dict.get('title', 'video').replace('/', '_')
                 title = re.sub(r'[^\w\-_\. ]', '_', title)  # Ajustar o título para um padrão seguro
-
-                if format_type == "mp3":
-                    file_title = os.path.join(download_folder, f"{title}.mp3")
-                else:
-                    file_title = os.path.join(download_folder, f"{title}.mp4")
+                
+                # Encontrar o arquivo baixado mais recente na pasta
+                files = [f for f in os.listdir(download_folder) if os.path.isfile(os.path.join(download_folder, f))]
+                if not files:
+                    raise FileNotFoundError("Arquivo baixado não encontrado")
+                
+                downloaded_file = os.path.join(download_folder, files[-1])
 
                 # Abrir o arquivo gerado e carregar no buffer
-                with open(file_title, "rb") as f:
+                with open(downloaded_file, "rb") as f:
                     file_bytes = f.read()
 
-            return file_bytes, file_title
+            return file_bytes, downloaded_file
         except yt_dlp.utils.DownloadError as e:
             # Verificando se o erro corresponde ao vídeo não disponível
             if "Video unavailable" in str(e):

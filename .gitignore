@@ -1,4 +1,5 @@
 .venv
+.env
 cookies.*
 downloads
 # Byte-compiled / optimized / DLL files
